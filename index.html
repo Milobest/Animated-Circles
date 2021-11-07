@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Circles</title>
+</head>
+<body style="margin:0;">
+
+<canvas id="canvas" style="background:#000;"></canvas>
+
+<script type="text/javascript">
+var canvas = document.getElementById('canvas');
+    c = canvas.getContext('2d');
+
+var innerWidth = window.innerWidth,
+    innerHeight = window.innerHeight;
+    TWO_PI = Math.PI * 2,
+    circleArray = [],
+    NumOfCircles = 100;
+
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+// Create multicolor circle
+
+var colorArray = [
+    '#cfed61',
+    '#5ef547',
+    '#4af0ea',
+    '#f5b056',
+    '#5a5fed',
+];
+
+// Function for creating circle
+
+function Circle (x,y,dx,dy,radius){
+    this.x = x;
+    this.y = y;
+    this.dx = dx;
+    this.dy = dy;
+    this.color = colorArray[Math.floor (Math.random() * colorArray.length)];
+    this.radius = radius;
+
+    // Create function for animate circle
+
+    this.update = function(){
+        if(this.x + this.radius > innerWidth || this.x - this.radius < 0){
+            this.dx = -this.dx;
+        }
+
+        if(this.y + this.radius > innerHeight || this.y - this.radius < 0){
+            this.dy = -this.dy;
+        }
+
+        this.x += this.dx;
+        this.y += this.dy;
+
+        this.draw();
+
+    }
+
+
+    // Create function for draw circle
+    this.draw = function(){
+        c.beginPath();
+        c.arc(this.x, this.y, this.radius, TWO_PI, false);
+        c.fillStyle = this.color;
+        c.fill();
+        c.closePath();
+    }
+
+    
+
+}
+
+
+// Run Circle function for creating new circle
+// Create multiple circles
+
+for (var i=0; i < NumOfCircles; i++) {
+    var radius = (Math.random() * 30) +1; // Random circle size
+    var x = Math.random() * (innerWidth - radius*2) + radius; // Random x Position
+    var y = Math.random() * (innerHeight - radius*2) + radius; // Random y Position
+    var dx = (Math.random() - 0.5) * 2; // Random x velocity
+    var dy = (Math.random() - 0.5) * 2; // Random y velocity
+    circleArray.push(new Circle (x,y,dx,dy,radius)); // create new circle
+}
+var i = 0;
+
+// Funcion for animate canvas elements
+function animate (){
+    requestAnimationFrame(animate);
+    c.clearRect(0,0,innerWidth,innerHeight);
+
+    for (var i=0; i<circleArray.length; i++){
+        circleArray[i].update();
+    }
+
+}
+
+animate();
+
+</script>
+    
+</body>
+</html>
